@@ -49,3 +49,11 @@ python main.py
 - 종료 시 데이터 저장은 파일 저장 기능 구현 단계에서 추가할 예정입니다.
 
 [기능 테스트 기록 보기](docs/test-results.md)
+
+## 코드 구조
+- main.py: 메뉴 표시, 공통 숫자 입력 검증, 종료 예외 처리를 담당합니다.
+- quiz.py: 문제 한 개를 표현하는 Quiz 클래스를 정의합니다.
+- Quiz의 속성: question, choices, answer
+- Quiz의 메서드: display(), check_answer()
+
+현재 Quiz 클래스는 별도로 구현했으며, 메뉴의 퀴즈 풀기 기능에는 아직 연결하지 않았습니다.

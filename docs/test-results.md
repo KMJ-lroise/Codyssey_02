@@ -25,3 +25,14 @@
 ![Ctrl+C 종료](screenshots/exit_ctrl_c.PNG)
 
 ![EOF 종료](screenshots/exit_eof.PNG)
+
+## Quiz 클래스
+
+| 테스트 | 기대 결과 | 실제 판정 |
+|---|---|---|
+| python quiz.py 실행 | 문제와 선택지 4개 출력 | 미확인 |
+| 정답 번호 2 전달 | True 반환 | 미확인 |
+| 오답 번호 1 전달 | False 반환 | 미확인 |
+| import quiz 실행 | 확인용 문제가 자동 실행되지 않음 | 미확인 |
+
+![Quiz 클래스 실행 확인](screenshots/quiz_class.PNG)
