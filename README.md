@@ -41,3 +41,11 @@ python main.py
 ![잘못된 메뉴 입력 처리](docs/screenshots/menu_invalid_input.PNG)
 
 ![정상 종료](docs/screenshots/menu_exit.PNG)
+
+## 입력 및 종료 처리
+- 숫자 입력 검증을 read_int() 함수로 분리했습니다.
+- 앞뒤 공백, 빈 입력, 정수 변환 실패, 허용 범위 밖 입력을 처리합니다.
+- Ctrl+C와 EOF 발생 시 안내 후 종료합니다.
+- 종료 시 데이터 저장은 파일 저장 기능 구현 단계에서 추가할 예정입니다.
+
+[기능 테스트 기록 보기](docs/test-results.md)
