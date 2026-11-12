@@ -7,8 +7,10 @@ Git으로 기능별 변경 이력을 관리합니다.
 
 ## 현재 진행 상황
 - 개발 환경 확인 완료
-- 프로젝트 폴더와 Git 관리 준비
-- 퀴즈 게임 기능은 구현 예정
+- GitHub 저장소 생성과 첫 업로드 완료
+- 메뉴 표시, 번호 선택, 정상 종료 구현
+- 잘못된 메뉴 입력 시 안내 후 다시 입력받도록 구현
+- 퀴즈 풀기·추가·목록·점수 기능은 구현 예정
 
 ## 개발 환경
 - 운영체제: Windows
@@ -21,3 +23,21 @@ Git으로 기능별 변경 이력을 관리합니다.
 ![Python 버전과 시범 실행](docs/screenshots/python_environment.PNG)
 
 ![개발 도구 확인과 Python 설치](docs/screenshots/environment_setup.PNG)
+
+## 실행 방법
+Python 3.10 이상이 필요합니다.
+프로젝트 폴더에서 다음 명령을 실행합니다.
+
+```powershell
+python main.py
+```
+
+현재는 메뉴 선택과 종료 기능까지 구현되어 있습니다.
+1~4번은 선택 확인 메시지를 출력하며, 5번은 프로그램을 종료합니다.
+
+## 메뉴 실행 화면
+![메뉴 표시와 선택](docs/screenshots/menu.PNG)
+
+![잘못된 메뉴 입력 처리](docs/screenshots/menu_invalid_input.PNG)
+
+![정상 종료](docs/screenshots/menu_exit.PNG)
