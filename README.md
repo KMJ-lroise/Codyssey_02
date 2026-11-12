@@ -18,6 +18,6 @@ Git으로 기능별 변경 이력을 관리합니다.
 - 터미널: PowerShell
 
 ## 개발 환경 확인 화면
-![Python 버전과 시범 실행](docs/screenshots/python_environment.png)
+![Python 버전과 시범 실행](docs/screenshots/python_environment.PNG)
 
-![개발 도구 확인과 Python 설치](docs/screenshots/environment_setup.png)
+![개발 도구 확인과 Python 설치](docs/screenshots/environment_setup.PNG)
