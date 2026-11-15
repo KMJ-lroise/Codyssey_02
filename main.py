@@ -205,33 +205,55 @@ def play_quiz(quizzes, language=DEFAULT_LANGUAGE):
     return score
 
 
+class QuizGame:
+    def __init__(self):
+        self.quizzes = create_default_quizzes()
+        self.best_score = None
+        self.language = load_language()
+
+    def show_menu(self):
+        show_menu(self.language)
+
+    def play_quiz(self):
+        return play_quiz(self.quizzes, self.language)
+
+    def configure_language(self):
+        self.language = configure_language(self.language)
+
+    def run(self):
+        try:
+            while True:
+                self.show_menu()
+                choice = read_int(
+                    message("select_prompt", self.language),
+                    1,
+                    6,
+                    self.language,
+                )
+
+                if choice == 1:
+                    self.play_quiz()
+                elif choice == 2:
+                    print(message("add_selected", self.language))
+                elif choice == 3:
+                    print(message("list_selected", self.language))
+                elif choice == 4:
+                    print(message("score_selected", self.language))
+                elif choice == 5:
+                    self.configure_language()
+                elif choice == 6:
+                    print(message("exit_message", self.language))
+                    break
+
+        except KeyboardInterrupt:
+            print(message("interrupt", self.language))
+        except EOFError:
+            print(message("eof", self.language))
+
+
 def run_game():
-    quizzes = create_default_quizzes()
-    language = load_language()
-
-    try:
-        while True:
-            show_menu(language)
-            choice = read_int(message("select_prompt", language), 1, 6, language)
-
-            if choice == 1:
-                play_quiz(quizzes, language)
-            elif choice == 2:
-                print(message("add_selected", language))
-            elif choice == 3:
-                print(message("list_selected", language))
-            elif choice == 4:
-                print(message("score_selected", language))
-            elif choice == 5:
-                language = configure_language(language)
-            elif choice == 6:
-                print(message("exit_message", language))
-                break
-
-    except KeyboardInterrupt:
-        print(message("interrupt", language))
-    except EOFError:
-        print(message("eof", language))
+    game = QuizGame()
+    game.run()
 
 
 if __name__ == "__main__":

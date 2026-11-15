@@ -14,6 +14,7 @@ Git으로 기능별 변경 이력을 관리합니다.
 - 기본 퀴즈 5개 출제, 정답·오답 판정, 최종 점수 표시 구현
 - 정답 입력 검증과 빈 퀴즈 목록 처리 구현
 - 퀴즈 추가·목록 보기·최고 점수 확인·state.json 저장은 구현 예정
+- Quiz와 QuizGame 클래스로 개별 문제와 게임 관리 역할 분리
 
 ## 개발 환경
 - 운영체제: Windows
@@ -59,14 +60,37 @@ python main.py
 [기능 테스트 기록 보기](docs/test-results.md)
 
 ## 코드 구조
-- main.py: 메뉴 표시, 공통 숫자 입력 검증, 종료 예외 처리를 담당합니다.
-- quiz.py: 문제 한 개를 표현하는 Quiz 클래스를 정의합니다.
-- Quiz의 속성: question, choices, answer
-- Quiz의 메서드: display(), check_answer()
-- default_quizzes.py: 기본 퀴즈를 Quiz 객체로 생성하고 목록으로 반환합니다.
 
-main.py의 play_quiz() 함수가 Quiz 객체의 display()와 check_answer()를 사용해 문제를 출제하고 채점합니다.
-read_int()는 메뉴 선택과 정답 입력에서 공통으로 사용합니다.
+- main.py: QuizGame 클래스와 입력·출력·언어 설정·퀴즈 진행 함수를 정의합니다.
+- quiz.py: 개별 문제를 표현하는 Quiz 클래스를 정의합니다.
+- default_quizzes.py: 기본 퀴즈 5개를 Quiz 객체 목록으로 생성합니다.
+- test_main.py: 언어 설정과 입력 검증 관련 자동 테스트를 정의합니다.
+
+### Quiz 클래스
+
+문제 한 개를 관리합니다.
+
+- 속성: question(문제), choices(선택지), answer(정답 번호)
+- 메서드: display()(문제 출력), check_answer()(정답 확인)
+
+### QuizGame 클래스
+
+게임 전체의 상태와 메뉴 진행을 관리합니다.
+
+- 속성: quizzes(문제 목록), best_score(최고 점수), language(표시 언어)
+- 메서드: show_menu(), play_quiz(), configure_language(), run()
+- 객체를 생성하면 기본 문제 목록과 표시 언어를 준비합니다.
+- 메뉴 표시와 퀴즈 풀기는 기존 함수를 활용합니다.
+- 최고 점수는 아직 갱신하지 않으며 초기값은 None입니다.
+- 최고 점수 관리와 state.json 저장·불러오기는 이후 구현할 예정입니다.
+
+### 역할을 나눈 이유
+
+Quiz는 문제 하나의 정보와 정답 확인을 담당하고,
+QuizGame은 여러 문제를 가지고 게임을 진행합니다.
+
+공통 숫자 입력 검증은 read_int() 함수로 분리하여
+메뉴 선택과 정답 입력에서 재사용합니다.
 
 
 ## 퀴즈 주제와 선정 이유
@@ -94,3 +118,14 @@ read_int()는 메뉴 선택과 정답 입력에서 공통으로 사용합니다.
 ![정답 번호 입력 검증](docs/screenshots/play_invalid_input.PNG)
 
 ![빈 퀴즈 목록 처리](docs/screenshots/play_empty.PNG)
+
+## 브랜치 작업과 병합
+
+1. main에서 git checkout -b feature/play로 작업 브랜치를 생성했습니다.
+2. feature/play에서 퀴즈 출제·채점·결과 표시 기능을 구현하고 커밋했습니다.
+3. main으로 이동한 뒤 git merge --no-ff feature/play로 병합했습니다.
+4. 병합한 main을 GitHub에 업로드했습니다.
+
+--no-ff 옵션을 사용해 별도의 병합 커밋을 남겼습니다.
+
+![퀴즈 풀기 브랜치 병합 기록](docs/screenshots/git_merge_play.PNG)
