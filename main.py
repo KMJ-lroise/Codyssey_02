@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from default_quizzes import create_default_quizzes
 
 
 LANGUAGE_FILE = Path(__file__).with_name("language.json")
@@ -29,6 +30,13 @@ LANGUAGES = {
         "exit_message": "퀴즈 게임을 종료합니다.",
         "interrupt": "\nCtrl+C를 감지했습니다. 프로그램을 종료합니다.",
         "eof": "\n입력이 종료되었습니다. 프로그램을 종료합니다.",
+        "no_quizzes": "등록된 퀴즈가 없습니다.",
+        "quiz_start": "퀴즈를 시작합니다! (총 {total}문제)",
+        "question_number": "[문제 {number}]",
+        "answer_prompt": "정답 번호 (1~4): ",
+        "correct_answer": "정답입니다!",
+        "wrong_answer": "오답입니다. 정답은 {answer}번입니다.",
+        "quiz_result": "결과: {total}문제 중 {correct}문제 정답! ({score}점)",
     },
     "en": {
         "empty_input": "Input is empty. Please enter a number.",
@@ -54,6 +62,13 @@ LANGUAGES = {
         "exit_message": "Exiting the quiz game.",
         "interrupt": "\nCtrl+C detected. Exiting the program.",
         "eof": "\nInput ended. Exiting the program.",
+        "no_quizzes": "There are no quizzes.",
+        "quiz_start": "Starting the quiz! ({total} questions)",
+        "question_number": "[Question {number}]",
+        "answer_prompt": "Answer (1-4): ",
+        "correct_answer": "Correct!",
+        "wrong_answer": "Incorrect. The correct answer is {answer}.",
+        "quiz_result": "Result: {correct}/{total} correct! ({score} points)",
     },
 }
 
@@ -148,15 +163,59 @@ def configure_language(current_language):
     return selected_language
 
 
+def play_quiz(quizzes, language=DEFAULT_LANGUAGE):
+    if not quizzes:
+        print(message("no_quizzes", language))
+        return
+
+    total = len(quizzes)
+    correct_count = 0
+    print(message("quiz_start", language, total=total))
+
+    for number, quiz in enumerate(quizzes, start=1):
+        print()
+        print("-" * 40)
+        print(message("question_number", language, number=number))
+        quiz.display()
+
+        user_answer = read_int(
+            message("answer_prompt", language),
+            1,
+            4,
+            language,
+        )
+
+        if quiz.check_answer(user_answer):
+            correct_count += 1
+            print(message("correct_answer", language))
+        else:
+            print(message("wrong_answer", language, answer=quiz.answer))
+
+    score = round(correct_count / total * 100)
+    print()
+    print(
+        message(
+            "quiz_result",
+            language,
+            total=total,
+            correct=correct_count,
+            score=score,
+        )
+    )
+    return score
+
+
 def run_game():
+    quizzes = create_default_quizzes()
     language = load_language()
+
     try:
         while True:
             show_menu(language)
             choice = read_int(message("select_prompt", language), 1, 6, language)
 
             if choice == 1:
-                print(message("solve_selected", language))
+                play_quiz(quizzes, language)
             elif choice == 2:
                 print(message("add_selected", language))
             elif choice == 3:
@@ -168,6 +227,7 @@ def run_game():
             elif choice == 6:
                 print(message("exit_message", language))
                 break
+
     except KeyboardInterrupt:
         print(message("interrupt", language))
     except EOFError:
