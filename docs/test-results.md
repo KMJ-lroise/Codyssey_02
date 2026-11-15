@@ -26,7 +26,7 @@
 | 언어 설정 파일이 없음 | 한국어로 시작 | 자동 테스트 통과 |
 | 영어 선택 | 영어 메뉴·안내 표시 및 다음 실행에도 설정 유지 | 자동 테스트 통과 |
 | 빈 입력·문자·범위 밖 입력 | 영어 안내 후 재입력 | 자동 테스트 통과 |
-| 지원하지 않는 언어 설정 | 명시적 오류로 실행 중단 | 자동 테스트 통과 |
+| 지원하지 않는 언어 설정 | 안내 후 한국어 기본값으로 실행 | 자동 테스트 통과 |
 
 ## 확인 화면
 ![숫자 입력 검사](screenshots/input_validation.PNG)
@@ -34,6 +34,10 @@
 ![Ctrl+C 종료](screenshots/exit_ctrl_c.PNG)
 
 ![EOF 종료](screenshots/exit_eof.PNG)
+
+![언어 설정 자동 테스트](screenshots/language_tests.PNG)
+
+![영어 설정 유지 확인](screenshots/language_english.PNG)
 
 ## Quiz 클래스
 
