@@ -149,3 +149,24 @@
 ![추가 후 목록](screenshots/quiz_list_added.PNG)
 
 ![빈 목록 처리](screenshots/quiz_list_empty.PNG)
+
+## 최고 점수
+
+| 테스트 | 기대 결과 | 실제 판정 |
+|---|---|---|
+| 플레이 전 메뉴 4번 선택 | 아직 완료한 게임이 없다는 안내 | 통과 |
+| 첫 게임에서 모두 오답 | 0점을 첫 최고 점수로 등록 | 통과 |
+| 0점 기록 후 메뉴 4번 선택 | 최고 점수 0점 표시 | 통과 |
+| 다음 게임에서 모두 정답 | 최고 점수를 100점으로 갱신 | 통과 |
+| 이후 게임에서 80점 획득 | 최고 점수 100점 유지 | 통과 |
+| 기존 언어 자동 테스트 | 8개 모두 통과 | 통과 |
+
+![플레이 전 안내](screenshots/score_before_play.PNG)
+
+![첫 0점 등록](screenshots/score_zero.PNG)
+
+![100점 갱신과 확인](screenshots/score.PNG)
+
+![최고 점수 유지](screenshots/score_keep_best.PNG)
+
+재실행 후 최고 점수 유지는 파일 저장 기능 구현 후 검사합니다.

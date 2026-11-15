@@ -44,6 +44,9 @@ LANGUAGES = {
         "choice_prompt": "선택지 {number}: ",
         "quiz_added": "퀴즈가 추가되었습니다! (총 {total}개)",
         "quiz_list_title": "등록된 퀴즈 목록 (총 {total}개)",
+        "no_score": "아직 퀴즈를 끝까지 풀지 않았습니다.",
+        "best_score_display": "최고 점수: {score}점",
+        "new_best_score": "새로운 최고 점수입니다! ({score}점)",
     },
     "en": {
         "empty_input": "Input is empty. Please enter a number.",
@@ -82,6 +85,9 @@ LANGUAGES = {
         "choice_prompt": "Choice {number}: ",
         "quiz_added": "Quiz added! ({total} quizzes in total)",
         "quiz_list_title": "Quiz list ({total} quizzes)",
+        "no_score": "You have not completed a quiz yet.",
+        "best_score_display": "Best score: {score} points",
+        "new_best_score": "New best score! ({score} points)",
     },
 }
 
@@ -238,7 +244,29 @@ class QuizGame:
         show_menu(self.language)
 
     def play_quiz(self):
-        return play_quiz(self.quizzes, self.language)
+        score = play_quiz(self.quizzes, self.language)
+
+        if score is None:
+            return
+
+        if self.best_score is None or score > self.best_score:
+            self.best_score = score
+            print(message("new_best_score", self.language, score=score))
+
+        return score
+
+    def show_score(self):
+        if self.best_score is None:
+            print(message("no_score", self.language))
+            return
+
+        print(
+            message(
+                "best_score_display",
+                self.language,
+                score=self.best_score,
+            )
+        )
 
     def add_quiz(self):
         print(message("add_start", self.language))
@@ -315,7 +343,7 @@ class QuizGame:
                 elif choice == 3:
                     self.show_quizzes()
                 elif choice == 4:
-                    print(message("score_selected", self.language))
+                    self.show_score()
                 elif choice == 5:
                     self.configure_language()
                 elif choice == 6:
