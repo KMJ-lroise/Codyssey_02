@@ -43,6 +43,7 @@ LANGUAGES = {
         "question_prompt": "문제를 입력하세요: ",
         "choice_prompt": "선택지 {number}: ",
         "quiz_added": "퀴즈가 추가되었습니다! (총 {total}개)",
+        "quiz_list_title": "등록된 퀴즈 목록 (총 {total}개)",
     },
     "en": {
         "empty_input": "Input is empty. Please enter a number.",
@@ -80,6 +81,7 @@ LANGUAGES = {
         "question_prompt": "Enter a question: ",
         "choice_prompt": "Choice {number}: ",
         "quiz_added": "Quiz added! ({total} quizzes in total)",
+        "quiz_list_title": "Quiz list ({total} quizzes)",
     },
 }
 
@@ -272,6 +274,26 @@ class QuizGame:
             )
         )
 
+    def show_quizzes(self):
+        if not self.quizzes:
+            print(message("no_quizzes", self.language))
+            return
+
+        print()
+        print(
+            message(
+                "quiz_list_title",
+                self.language,
+                total=len(self.quizzes),
+            )
+        )
+        print("-" * 40)
+
+        for number, quiz in enumerate(self.quizzes, start=1):
+            print(f"[{number}] {quiz.question}")
+
+        print("-" * 40)
+
     def configure_language(self):
         self.language = configure_language(self.language)
 
@@ -291,7 +313,7 @@ class QuizGame:
                 elif choice == 2:
                     self.add_quiz()
                 elif choice == 3:
-                    print(message("list_selected", self.language))
+                    self.show_quizzes()
                 elif choice == 4:
                     print(message("score_selected", self.language))
                 elif choice == 5:
