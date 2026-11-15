@@ -28,7 +28,7 @@ class DisplayLanguageTests(unittest.TestCase):
         self.assertEqual(main.load_language(), "en")
         self.assertEqual(json.loads(self.language_file.read_text(encoding="utf-8")), {"language": "en"})
 
-        def test_invalid_language_setting_uses_default(self):
+    def test_invalid_language_setting_uses_default(self):
         self.language_file.write_text('{"language": "fr"}', encoding="utf-8")
         output = StringIO()
 
