@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from default_quizzes import create_default_quizzes
+from quiz import Quiz
 
 
 LANGUAGE_FILE = Path(__file__).with_name("language.json")
@@ -37,6 +38,11 @@ LANGUAGES = {
         "correct_answer": "정답입니다!",
         "wrong_answer": "오답입니다. 정답은 {answer}번입니다.",
         "quiz_result": "결과: {total}문제 중 {correct}문제 정답! ({score}점)",
+        "empty_text": "내용이 비어 있습니다. 다시 입력하세요.",
+        "add_start": "새로운 퀴즈를 추가합니다.",
+        "question_prompt": "문제를 입력하세요: ",
+        "choice_prompt": "선택지 {number}: ",
+        "quiz_added": "퀴즈가 추가되었습니다! (총 {total}개)",
     },
     "en": {
         "empty_input": "Input is empty. Please enter a number.",
@@ -69,6 +75,11 @@ LANGUAGES = {
         "correct_answer": "Correct!",
         "wrong_answer": "Incorrect. The correct answer is {answer}.",
         "quiz_result": "Result: {correct}/{total} correct! ({score} points)",
+        "empty_text": "Input is empty. Please enter some text.",
+        "add_start": "Add a new quiz.",
+        "question_prompt": "Enter a question: ",
+        "choice_prompt": "Choice {number}: ",
+        "quiz_added": "Quiz added! ({total} quizzes in total)",
     },
 }
 
@@ -108,6 +119,16 @@ def save_language(language):
     with LANGUAGE_FILE.open("w", encoding="utf-8") as settings_file:
         json.dump({"language": language}, settings_file, ensure_ascii=False, indent=2)
         settings_file.write("\n")
+
+
+def read_text(prompt, language=DEFAULT_LANGUAGE):
+    while True:
+        text = input(prompt).strip()
+
+        if text:
+            return text
+
+        print(message("empty_text", language))
 
 
 def read_int(prompt, min_value, max_value, language=DEFAULT_LANGUAGE):
@@ -217,6 +238,40 @@ class QuizGame:
     def play_quiz(self):
         return play_quiz(self.quizzes, self.language)
 
+    def add_quiz(self):
+        print(message("add_start", self.language))
+
+        question = read_text(
+            message("question_prompt", self.language),
+            self.language,
+        )
+
+        choices = []
+        for number in range(1, 5):
+            choice = read_text(
+                message("choice_prompt", self.language, number=number),
+                self.language,
+            )
+            choices.append(choice)
+
+        answer = read_int(
+            message("answer_prompt", self.language),
+            1,
+            4,
+            self.language,
+        )
+
+        quiz = Quiz(question, choices, answer)
+        self.quizzes.append(quiz)
+
+        print(
+            message(
+                "quiz_added",
+                self.language,
+                total=len(self.quizzes),
+            )
+        )
+
     def configure_language(self):
         self.language = configure_language(self.language)
 
@@ -234,7 +289,7 @@ class QuizGame:
                 if choice == 1:
                     self.play_quiz()
                 elif choice == 2:
-                    print(message("add_selected", self.language))
+                    self.add_quiz()
                 elif choice == 3:
                     print(message("list_selected", self.language))
                 elif choice == 4:
