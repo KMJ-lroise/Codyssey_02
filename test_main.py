@@ -13,11 +13,24 @@ import main
 class DisplayLanguageTests(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp_dir.cleanup)
+
         self.language_file = Path(self.temp_dir.name) / "language.json"
-        self.language_file_patch = patch.object(main, "LANGUAGE_FILE", self.language_file)
+        self.language_file_patch = patch.object(
+            main,
+            "LANGUAGE_FILE",
+            self.language_file,
+        )
         self.language_file_patch.start()
         self.addCleanup(self.language_file_patch.stop)
-        self.addCleanup(self.temp_dir.cleanup)
+
+        self.state_file_patch = patch.object(
+            main,
+            "STATE_FILE",
+            Path(self.temp_dir.name) / "state.json",
+        )
+        self.state_file_patch.start()
+        self.addCleanup(self.state_file_patch.stop)
 
     def test_missing_setting_defaults_to_korean(self):
         self.assertEqual(main.load_language(), "ko")

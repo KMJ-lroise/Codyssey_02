@@ -2,9 +2,11 @@ import json
 from pathlib import Path
 from default_quizzes import create_default_quizzes
 from quiz import Quiz
+from datetime import datetime
 
 
 LANGUAGE_FILE = Path(__file__).with_name("language.json")
+STATE_FILE = Path(__file__).resolve().with_name("state.json")
 DEFAULT_LANGUAGE = "ko"
 LANGUAGES = {
     "ko": {
@@ -47,6 +49,16 @@ LANGUAGES = {
         "no_score": "아직 퀴즈를 끝까지 풀지 않았습니다.",
         "best_score_display": "최고 점수: {score}점",
         "new_best_score": "새로운 최고 점수입니다! ({score}점)",
+        "state_missing": "저장 파일이 없어 기본 퀴즈로 시작합니다.",
+        "state_loaded": "저장된 데이터를 불러왔습니다. (퀴즈 {total}개)",
+        "state_invalid": "저장 데이터가 손상되어 기본 퀴즈로 시작합니다: {error}",
+        "state_backup": "손상 파일을 백업했습니다: {filename}",
+        "state_backup_failed": "백업하지 못해 이번 실행의 저장을 중지합니다: {error}",
+        "state_read_failed": "파일을 읽지 못했습니다. 기본 퀴즈로 시작하며 이번 실행은 저장하지 않습니다: {error}",
+        "state_save_blocked": "기존 파일 보호를 위해 저장하지 않았습니다.",
+        "state_save_failed": "파일 저장에 실패했습니다. 이번 변경이 저장되지 않았습니다: {error}",
+        "state_save_interrupted": "파일 저장이 중단되었습니다. 저장 완료를 확인하지 못했습니다.",
+        "state_saved": "퀴즈와 최고 점수를 저장했습니다.",
     },
     "en": {
         "empty_input": "Input is empty. Please enter a number.",
@@ -88,6 +100,16 @@ LANGUAGES = {
         "no_score": "You have not completed a quiz yet.",
         "best_score_display": "Best score: {score} points",
         "new_best_score": "New best score! ({score} points)",
+        "state_missing": "No save file. Starting with default quizzes.",
+        "state_loaded": "Saved data loaded. ({total} quizzes)",
+        "state_invalid": "Invalid save data. Starting with default quizzes: {error}",
+        "state_backup": "Damaged file backed up: {filename}",
+        "state_backup_failed": "Backup failed. Saving is disabled for this session: {error}",
+        "state_read_failed": "Could not read the file. Using defaults without saving this session: {error}",
+        "state_save_blocked": "Saving skipped to protect the existing file.",
+        "state_save_failed": "Save failed. These changes were not saved: {error}",
+        "state_save_interrupted": "Saving was interrupted. Save completion could not be confirmed.",
+        "state_saved": "Quizzes and best score saved.",
     },
 }
 
@@ -239,6 +261,105 @@ class QuizGame:
         self.quizzes = create_default_quizzes()
         self.best_score = None
         self.language = load_language()
+        self.can_save = True
+        self.load_state()
+
+    def load_state(self):
+        try:
+            with STATE_FILE.open(encoding="utf-8") as state_file:
+                data = json.load(state_file)
+
+            if not isinstance(data, dict):
+                raise ValueError("state data must be an object.")
+            if "quizzes" not in data or "best_score" not in data:
+                raise ValueError("quizzes or best_score is missing.")
+            if not isinstance(data["quizzes"], list):
+                raise ValueError("quizzes must be a list.")
+
+            quizzes = [Quiz.from_dict(item) for item in data["quizzes"]]
+            best_score = data["best_score"]
+
+            if best_score is not None:
+                if type(best_score) is not int or not 0 <= best_score <= 100:
+                    raise ValueError(
+                        "best_score must be null or an integer from 0 to 100."
+                    )
+
+        except FileNotFoundError:
+            print(message("state_missing", self.language))
+
+        except (ValueError, RecursionError) as error:
+            print(message("state_invalid", self.language, error=error))
+
+            stamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+            backup = STATE_FILE.with_name(
+                STATE_FILE.name + f".corrupt-{stamp}.bak"
+            )
+
+            try:
+                STATE_FILE.rename(backup)
+            except OSError as backup_error:
+                self.can_save = False
+                print(
+                    message(
+                        "state_backup_failed",
+                        self.language,
+                        error=backup_error,
+                    )
+                )
+            else:
+                print(
+                    message(
+                        "state_backup",
+                        self.language,
+                        filename=backup.name,
+                    )
+                )
+
+        except OSError as error:
+            self.can_save = False
+            print(message("state_read_failed", self.language, error=error))
+
+        else:
+            self.quizzes = quizzes
+            self.best_score = best_score
+            print(
+                message(
+                    "state_loaded",
+                    self.language,
+                    total=len(self.quizzes),
+                )
+            )
+
+    def save_state(self):
+        if not self.can_save:
+            print(message("state_save_blocked", self.language))
+            return False
+
+        temp_file = STATE_FILE.with_name(STATE_FILE.name + ".tmp")
+
+        try:
+            data = {
+                "quizzes": [quiz.to_dict() for quiz in self.quizzes],
+                "best_score": self.best_score,
+            }
+
+            with temp_file.open("w", encoding="utf-8") as state_file:
+                json.dump(data, state_file, ensure_ascii=False, indent=2)
+                state_file.write("\n")
+
+            temp_file.replace(STATE_FILE)
+
+        except (OSError, ValueError, TypeError) as error:
+            print(message("state_save_failed", self.language, error=error))
+            return False
+
+        except KeyboardInterrupt:
+            print(message("state_save_interrupted", self.language))
+            return False
+
+        print(message("state_saved", self.language))
+        return True
 
     def show_menu(self):
         show_menu(self.language)
@@ -253,6 +374,7 @@ class QuizGame:
             self.best_score = score
             print(message("new_best_score", self.language, score=score))
 
+        self.save_state()
         return score
 
     def show_score(self):
@@ -301,6 +423,8 @@ class QuizGame:
                 total=len(self.quizzes),
             )
         )
+
+        self.save_state()
 
     def show_quizzes(self):
         if not self.quizzes:
@@ -354,6 +478,8 @@ class QuizGame:
             print(message("interrupt", self.language))
         except EOFError:
             print(message("eof", self.language))
+        finally:
+            self.save_state()
 
 
 def run_game():
