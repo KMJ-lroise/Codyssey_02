@@ -339,12 +339,19 @@ git log --oneline --graph --all
 
 ### clone과 pull 실습
 
-실습 예정입니다.
-별도 폴더에 저장소를 clone하고, 복제본에서 문서를 수정하여 commit과 push를 수행한 뒤,
-기존 작업 폴더에서 pull로 변경을 가져오는 과정과 결과를 기록할 예정입니다.
+1. GitHub 저장소를 Codyssey_02_clone 폴더에 복제했습니다.
+2. 복제본의 README에 ‘복제본 수정 확인’ 문장을 추가했습니다.
+3. 복제본에서 commit과 push를 수행했습니다.
+4. 원래 작업 폴더인 Codyssey_02에서 git pull --ff-only를 실행했습니다.
+5. 원래 폴더에도 추가한 문장과 같은 커밋 번호가 반영됐는지 확인했습니다.
 
+복제본에서 만든 커밋:
+fbdcca8 — Docs: clone 복제본에서 README 수정 실습 기록
 
-### 복제본 수정 확인
+사용한 주요 명령:
 
-Codyssey_02_clone 폴더에서 README를 수정했습니다.
-이 문장은 복제본의 변경을 GitHub에 올리고 원래 작업 폴더에서 pull로 가져오는지 확인하기 위한 기록입니다.
+```powershell
+git clone https://github.com/KMJ-lroise/Codyssey_02.git Codyssey_02_clone
+git add README.md
+git commit -m "Docs: clone 복제본에서 README 수정 실습 기록"
+git push
