@@ -89,6 +89,7 @@ python main.py
 | docs/screenshots/ | 실행 결과와 Git 작업 화면 |
 | state.json | 실행 중 생성되는 퀴즈와 최고 점수 저장 파일 |
 | language.json | 실행 중 생성되는 표시 언어 설정 파일 |
+| test_state.py | 저장 파일 읽기·쓰기·교체·백업 실패 시 데이터 보호 검사 |
 
 state.json과 language.json은 개인 실행 데이터이므로 Git 관리에서 제외합니다.
 
@@ -296,17 +297,25 @@ state.json과 관련 임시·백업 파일은 .gitignore로 Git 관리에서 제
 
 ## 테스트
 
-언어 설정 관련 자동 테스트는 다음 명령으로 실행합니다.
+자동 테스트는 프로젝트 폴더에서 다음 명령으로 실행합니다.
 
 ```powershell
-python -m unittest -v test_main
+python -m unittest -v test_main test_state
 ```
 
-언어 설정 관련 자동 테스트 8개가 통과했습니다.
-퀴즈 기능, 입력 오류, 재실행 후 데이터 유지와 손상 파일 처리는 수동으로도 검사했습니다.
+- test_main.py: 언어 설정 관련 검사 8개
+- test_state.py: 저장 파일 오류 처리 검사 4개
+- 실행 결과: 총 12개 통과(OK)
+
+저장 파일 오류 검사는 임시 폴더와 unittest.mock.patch를 사용합니다.
+읽기·쓰기·교체·백업 실패를 모의로 발생시켜 기존 파일이 보호되는지 확인합니다.
+
+퀴즈 기능, 입력 오류, 재실행 후 데이터 유지, Ctrl+C·EOF 종료,
+저장 파일이 없거나 손상된 상황은 수동으로도 검사했습니다.
+
+![저장 파일 오류 처리 검사](docs/screenshots/state_error_tests.PNG)
 
 자세한 검사 조건과 결과는 [기능 테스트 기록](docs/test-results.md)에 정리했습니다.
-자동 테스트 8개 통과가 모든 기능을 자동으로 검사했다는 뜻은 아닙니다.
 
 ## Git 작업 기록
 
