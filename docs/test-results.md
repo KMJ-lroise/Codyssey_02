@@ -226,3 +226,36 @@ null은 최고 점수 기록이 없다는 뜻이며 Python의 None에 대응한�
 ![손상 파일 감지와 기본 데이터 초기화](screenshots/state_corrupt.PNG)
 
 ![손상 파일 백업 확인](screenshots/state_backup.PNG)
+
+## 저장 파일이 없는 첫 실행
+
+GitHub 저장소를 Codyssey_02_clone 폴더에 복제한 뒤 검사했다.
+
+| 테스트 | 기대 결과 | 실제 판정 |
+|---|---|---|
+| 실행 전 state.json 확인 | Test-Path 결과 False | 통과 |
+| 저장 파일 없이 실행 | 안내 후 기본 퀴즈 5개로 시작 | 통과 |
+| 첫 실행에서 점수 확인 | 아직 완료한 게임이 없다는 안내 | 통과 |
+| 정상 종료 후 파일 확인 | Test-Path 결과 True | 통과 |
+| 저장 파일 생성 후 Git 상태 | working tree clean 유지 | 통과 |
+
+![저장 파일 없는 첫 실행](screenshots/state_missing.PNG)
+
+![저장 파일 생성 확인](screenshots/state_created.PNG)
+
+## clone과 pull 실습
+
+| 테스트 | 기대 결과 | 실제 판정 |
+|---|---|---|
+| 별도 폴더에 clone | 저장소 복제 성공 | 통과 |
+| 복제본에서 README 수정 후 commit과 push | 원격 저장소에 새 커밋 반영 | 통과 |
+| 원래 폴더에서 pull | 원격 변경을 원래 작업 폴더에 반영 | 통과 |
+| 문장과 커밋 번호 확인 | 추가한 문장과 fbdcca8 커밋 확인 | 통과 |
+
+![저장소 복제](screenshots/git_clone.PNG)
+
+![복제본 커밋과 업로드](screenshots/git_clone_push.PNG)
+
+![원래 폴더에서 pull](screenshots/git_pull.PNG)
+
+![변경 반영 확인](screenshots/git_pull_verify.PNG)

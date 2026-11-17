@@ -355,3 +355,11 @@ git clone https://github.com/KMJ-lroise/Codyssey_02.git Codyssey_02_clone
 git add README.md
 git commit -m "Docs: clone 복제본에서 README 수정 실습 기록"
 git push
+
+
+### 전체 커밋과 병합 기록
+
+기능별 구현과 오류 수정, 문서 작업을 나누어 커밋했습니다.
+feature/play에서 구현한 퀴즈 풀기 기능을 main에 병합했습니다.
+
+![전체 커밋과 브랜치 병합 기록](docs/screenshots/git_log_graph.PNG)
