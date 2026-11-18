@@ -364,7 +364,7 @@ git clone https://github.com/KMJ-lroise/Codyssey_02.git Codyssey_02_clone
 git add README.md
 git commit -m "Docs: clone 복제본에서 README 수정 실습 기록"
 git push
-
+```
 
 ### 전체 커밋과 병합 기록
 
